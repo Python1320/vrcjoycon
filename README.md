@@ -15,9 +15,7 @@ For now, only simple on/off rumble haptics are supported!
 
 
 # HELP WANTED
-Only tested with knockoff joycons:
-
-# Troubleshooting
+Only tested with knockoff joycons. Does it work with real joycons?
 
 # TODO
  - Example haptics avatar world
@@ -48,6 +46,11 @@ Only tested with knockoff joycons:
   6. Launch **VRChat** if not already launched
      1. From the VRChat's **circular menu**, inside **settings**, inside **OSC**, choose **Enable** OSC. Additional help [here](https://docs.vrchat.com/docs/osc-overview#enabling-it).
       (*If the haptics do not work, try reset configuration option in the same menu* **ATTN.** The OSC Debug menu does not help you with debugging haptics, only output)
+
+# Troubleshooting
+
+Test with OSC receiver to see if your avatar is transmitting. Try transmitting `1` to `/avatar/parameters/joyconrumble1` with OSC sender to see if `vrcjoycon.exe` works.
+
 
 # Credits / components used
  - [joycon-python](https://github.com/tocoteron/joycon-python) library
