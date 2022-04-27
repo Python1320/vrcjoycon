@@ -7,9 +7,9 @@ For now, only simple on/off rumble haptics are supported!
 # Requirements
 
  - Nintendo Switch Joy-Con controller(s). **Only tested with knockoffs from Aliexpress.**
- - A customisable avatar or a compatible avatar 
+ - A customisable avatar or a compatible avatar
  - Unity editor
- - `vrcjoycon.exe` from this repository's Releases
+ - `vrcjoycon.exe` from this repository's [Releases](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
 
 # TODO
  - Example haptics avatar
@@ -31,10 +31,10 @@ For now, only simple on/off rumble haptics are supported!
         ![animator](images/help1.png)
 
 **VRChat**
-  1. Put controllers into pairing mode.
-  2. Pair controllers manually over Bluetooth with Windows
-  3. Launch vrcjoycon.exe
-  4. When pairing is successful, the controllers should vibrate a few times
+  1. Put controllers into pairing mode by pressing the pairing button.
+  2. Pair controllers manually over Bluetooth with Windows.
+  3. Launch [vrcjoycon.exe](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
+  4. When pairing is successful, the controller should vibrate. You may need to press the pair button in the controllers a few times before Windows notices the controllers. They should say "connected" in the windows settings when this is so.
   5. In case of trouble, test with other joycon software first
   6. Launch **VRChat** if not already launched
      1. From the VRChat's **circular menu**, inside **settings**, inside **OSC**, choose **Enable** OSC. Additional help [here](https://docs.vrchat.com/docs/osc-overview#enabling-it).
