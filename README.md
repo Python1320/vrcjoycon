@@ -7,14 +7,23 @@ For now, only simple on/off rumble haptics are supported!
 # Requirements
 
  - Nintendo Switch Joy-Con controller(s). **Only tested with knockoffs from Aliexpress.**
+ - Something to attach controller to body/headset straps, for example ["Exercise Patch Self Adhesive Tape Sports Gym Fitness"](https://www.google.com/search?q=Exercise+Patch+Self+Adhesive+Tape+Sports+Gym+Fitness)
  - A customisable avatar or a compatible avatar
  - Unity editor
  - `vrcjoycon.exe` from this repository's [Releases](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
 
+
+
+# HELP WANTED
+Only tested with knockoff joycons:
+
+# Troubleshooting
+
 # TODO
- - Example haptics avatar
- - Debug help
- - Button input
+ - Example haptics avatar world
+ - Button input possibility
+ - Gyroscope?
+ - Switch joy-con to poll only to reduce wireless interference
 
 # Haptics: Setting Up / Usage
 
