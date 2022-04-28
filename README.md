@@ -7,8 +7,9 @@ For now, only simple on/off rumble haptics are supported!
 # Requirements
 
  - Nintendo Switch Joy-Con controller(s). **Only tested with knockoffs from Aliexpress.**
- - Something to attach controller to body/headset straps, for example ["Exercise Patch Self Adhesive Tape Sports Gym Fitness"](https://www.google.com/search?q=Exercise+Patch+Self+Adhesive+Tape+Sports+Gym+Fitness)
  - A customisable avatar or a compatible avatar
+ - Bluetooth Dongle or similar. [You can use another Windows device as relay](#relay)
+ - Something to attach controller to body/headset straps, for example ["Exercise Patch Self Adhesive Tape Sports Gym Fitness"](https://www.google.com/search?q=Exercise+Patch+Self+Adhesive+Tape+Sports+Gym+Fitness)
  - Unity editor
  - `vrcjoycon.exe` from this repository's [Releases](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
 
@@ -46,6 +47,15 @@ Only tested with knockoff joycons. Does it work with real joycons?
   6. Launch **VRChat** if not already launched
      1. From the VRChat's **circular menu**, inside **settings**, inside **OSC**, choose **Enable** OSC. Additional help [here](https://docs.vrchat.com/docs/osc-overview#enabling-it).
       (*If the haptics do not work, try reset configuration option in the same menu* **ATTN.** The OSC Debug menu does not help you with debugging haptics, only output)
+
+# Relay
+If you have no bluetooth on your VR PC or are experiencing interference it should also be possible to use `vrcjoycon.exe` on a different Windows Laptop, for example.
+
+ 1. You will need to configure VRChat to relay the OSC output data to your target computer: https://docs.vrchat.com/docs/osc-overview#vrchat-ports
+ 2. Start `vrcjoycon` with command line arguments `vrcjoycon.exe --listen=any --port=9001`
+       - You can replace `any` with an IP address. Any is an alias for `0.0.0.0`
+       - The default port is 9001
+       - Make sure your firewall allows listening on `UDP` protocol port `9001` for `vrcjoycon.exe`
 
 # Troubleshooting
 
