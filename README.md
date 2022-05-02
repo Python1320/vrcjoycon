@@ -66,4 +66,6 @@ Test with OSC receiver to see if your avatar is transmitting. Try transmitting `
  - [joycon-python](https://github.com/tocoteron/joycon-python) library
 
 # License
-TODO
+
+PENDING MISSING LICENSE ON: https://github.com/tocoteron/joycon-python
+
