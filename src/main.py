@@ -3,9 +3,30 @@ from pyjoycon import JoyCon, get_R_id, get_L_id, joycon
 import logging,sys,os,threading,time
 from pythonosc import dispatcher
 from pythonosc import osc_server
+from pythonosc.udp_client import SimpleUDPClient
 
 from os import system
 system("title VRChat Joy-Con OSC Connector")
+
+import argparse
+def is_port(string):
+	try:
+		value = int(string)
+	except Exception:
+		value=0
+	if not (value>0 and value<65535):
+		msg = "%r is not a valid port number" % string
+		raise argparse.ArgumentTypeError(msg)
+	return value
+
+parser = argparse.ArgumentParser(description='VRChat Joy-Con OSC Connector')
+parser.add_argument('--listen', type=str, help='Listening port. By default only IPv4 localhost.',default="127.0.0.1")
+parser.add_argument('--port', type=is_port, help='listening port',default=9001)
+parser.add_argument('--verbose', help='Verbose mode',action="store_true")
+parser.add_argument('--to-port', type=is_port, help='(advanced) for relaying the rest of OSC messages to another processor')
+parser.add_argument('--to-ip', type=str, help='(advanced) for relaying the rest of OSC messages to another processor.',default="127.0.0.1")
+args = parser.parse_args()
+
 
 joyconrumble = [False, False]
 joycons=[False,False]
@@ -65,9 +86,10 @@ def headpatter_thread(conGetter, conid):
 
 threads = []
 server: osc_server.ThreadingOSCUDPServer = None
+client: SimpleUDPClient = None
 
 def startOSC():
-	global server
+	global server,client
 	def joyconrumble_1_handler(address, *args):
 		logging.debug("joyconrumble_1_handler %s %s", str(address), str(args))
 		joyconrumble[0] = args[0]
@@ -75,14 +97,27 @@ def startOSC():
 	def joyconrumble_2_handler(address, *args):
 		logging.debug("joyconrumble_2_handler %s %s", str(address), str(args))
 		joyconrumble[1] = args[0]
-
+	def default_handler(key,*vals):
+		if client:
+			client.send_message(key, vals)
+		if args.verbose:
+			print("RELAY: ",key,vals)
+			
 	d = dispatcher.Dispatcher()
 	d.map("/avatar/parameters/joyconrumble1", joyconrumble_1_handler)
 	d.map("/avatar/parameters/joyconrumble2", joyconrumble_2_handler)
+	if args.to_port or args.verbose:
+		d.set_default_handler(default_handler)
+
 	server = osc_server.ThreadingOSCUDPServer(
-		("127.0.0.1", 9001), d)
-	print("Listening on default OSC port 8991 at {}".format(server.server_address))
+		(args.listen, args.port), d)
+	print("Listening on host,port {}".format(server.server_address))
 	print("")
+
+	if args.to_port:
+		client = SimpleUDPClient(args.to_ip, args.to_port)
+		print("Relaying other messages to {} on port {}".format(args.to_ip,args.to_port))
+		print("")
 
 def watchdog():
 	while True:
