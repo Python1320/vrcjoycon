@@ -1,6 +1,6 @@
-# VRCJoyCon
+# JoyCon (Haptics) for CVR/VRC
 
-Link Nintendo Switch Joy-Cons to VRChat! Uses the new [OSC system](https://docs.vrchat.com/docs/osc-overview). 
+Link Nintendo Switch Joy-Cons to Chillout VR/VRChat! Uses [OSC Mod](https://github.com/kafeijao/Kafe_CVR_Mods/tree/master/OSC) in Chillout and the [OSC system](https://docs.vrchat.com/docs/osc-overview) in VRChat.
 
 For now, only simple on/off rumble haptics are supported!
 
@@ -12,21 +12,36 @@ For now, only simple on/off rumble haptics are supported!
  - Something to attach controller to body/headset straps, for example ["Exercise Patch Self Adhesive Tape Sports Gym Fitness"](https://www.google.com/search?q=Exercise+Patch+Self+Adhesive+Tape+Sports+Gym+Fitness)
  - Unity editor
  - `vrcjoycon.exe` from this repository's [Releases](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
-
-
+ - **ChilloutVR**
+   - [OSC Mod](https://github.com/kafeijao/Kafe_CVR_Mods/tree/master/OSC) (Recommended to install via [CVR Assistant](https://github.com/knah/CVRMelonAssistant))
+   - Other avatars need [CVR Pointer]( https://documentation.abinteractive.net/cck/components/pointer/?h=pointer#cvr-pointer) on at least one index finger.
+   - Your avatar needs [CVR Advanced Avatar Trigger](https://documentation.abinteractive.net/cck/components/aas-trigger/) boxes and parameters
 
 # HELP WANTED
-Only tested with knockoff joycons. Does it work with real joycons?
+Only tested with knockoff joycons. Does it work with real joycons? Apparently not. We need to fix this!
 
 # TODO
- - Example haptics avatar world
+ - Example haptics avatar + world (please submit in PR!)
  - Button input possibility
  - Gyroscope?
- - Switch joy-con to poll only to reduce wireless interference
+ - Switch joy-con to poll only to reduce wireless interference (partially done)
 
 # Haptics: Setting Up / Usage
+### **Unity** (For Chillout VR)
 
-**Unity**
+Rather simple. Just add a few components with right parameter name and it should just work.
+
+  1. Add joyconrumble1 to avatar parameters
+     
+     ![Add joyconrumble1 to avatar parameters](https://user-images.githubusercontent.com/207340/188220202-71f9448d-4c50-4405-a0eb-7d022e5a590a.png)
+  2. Add [CVR Advanced Avatar Trigger](https://documentation.abinteractive.net/cck/components/aas-trigger/) to your head
+     
+     ![Add CVR Advanced Avatar Trigger](https://user-images.githubusercontent.com/207340/188219981-bdeecdf4-a738-4fd1-9dfd-59fb5beacae5.png)
+  3. Add [CVR Pointer]( https://documentation.abinteractive.net/cck/components/pointer/?h=pointer#cvr-pointer) on at least one finger
+     
+     ![Add CVR Pointer](https://user-images.githubusercontent.com/207340/188220053-e38ae570-91c1-41c0-a9de-9ac943f99a3f.png)
+
+### **Unity** (for VRCHat)
   1. Position one or multiple [Contact Receivers](https://docs.vrchat.com/docs/contacts#vrccontactreceiver) components to your chosen avatar bone
      1. Choose at least some collision tags or you will receive no contacts 
      2. Haptics can be set to `local only`. `Allow Self` is recommended for testing.
@@ -38,7 +53,7 @@ Only tested with knockoff joycons. Does it work with real joycons?
         
         ![animator](images/help1.png)
 
-**VRChat**
+### **VRChat**
   1. Put controllers into pairing mode by pressing the pairing button.
   2. Pair controllers manually over Bluetooth with Windows.
   3. Launch [vrcjoycon.exe](https://github.com/Python1320/vrcjoycon/releases/tag/vrcjoycon)
