@@ -1,6 +1,6 @@
-# JoyCon (Haptics) for CVR/VRC
+# OSC-based JoyCon (Haptics) for ChilloutVR/VRChat
 
-Link Nintendo Switch Joy-Cons to Chillout VR/VRChat! Uses [OSC Mod](https://github.com/kafeijao/Kafe_CVR_Mods/tree/master/OSC) in Chillout and the [OSC system](https://docs.vrchat.com/docs/osc-overview) in VRChat.
+Link Nintendo Switch Joy-Cons to [Chillout VR](https://store.steampowered.com/app/661130/ChilloutVR/)/VRChat! Uses [OSC Mod](https://github.com/kafeijao/Kafe_CVR_Mods/tree/master/OSC) in ChilloutVR and the [OSC system](https://docs.vrchat.com/docs/osc-overview) in VRChat.
 
 For now, only simple on/off rumble haptics are supported!
 
