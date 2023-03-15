@@ -1,14 +1,66 @@
+#/usr/bin/env python3
 
 from pyjoycon import JoyCon, get_R_id, get_L_id, joycon
 import logging,sys,os,threading,time
 from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc.udp_client import SimpleUDPClient
+from pprint import pprint
+import asyncio
+import sys
+from contextlib import suppress
+from asynccmd import Cmd
+
 
 from os import system
 system("title VRChat Joy-Con OSC Connector")
 
 import argparse
+
+
+
+
+class Commander(Cmd):
+
+	def __init__(self, intro, prompt):
+
+
+		if sys.platform == 'win32':
+			loop = asyncio.ProactorEventLoop()
+			mode = "Run"
+		else:
+			loop = asyncio.get_event_loop()
+			mode = "Reader"
+
+		super().__init__(mode=mode)
+		self.intro = intro
+		self.prompt = prompt
+		self.loop = None
+
+	def do_sleep(self, arg):
+		"""
+		Our example cmd-command-method for sleep. sleep <arg>
+		:param arg: contain args that go after command
+		:return: None
+		"""
+		self.loop.create_task(sleep_n_print(self.loop, arg))
+
+	def do_tasks(self, arg):
+		"""
+		Our example method. Type "tasks <arg>"
+		:param arg: contain args that go after command
+		:return: None
+		"""
+		for task in asyncio.Task.all_tasks(loop=self.loop):
+			print(task)
+
+	def start(self, loop=None):
+		self.loop = loop
+		super().cmdloop(loop)
+
+
+
+
 def is_port(string):
 	try:
 		value = int(string)
@@ -18,6 +70,8 @@ def is_port(string):
 		msg = "%r is not a valid port number" % string
 		raise argparse.ArgumentTypeError(msg)
 	return value
+
+logging.basicConfig(level=logging.DEBUG)
 
 parser = argparse.ArgumentParser(description='VRChat Joy-Con OSC Connector')
 parser.add_argument('--listen', type=str, help='Listening port. By default only IPv4 localhost.',default="127.0.0.1")
@@ -64,7 +118,7 @@ def headpatter_thread(conGetter, conid):
 		with lock:
 			joycon.rumble_stop()
 		logging.debug("Vibrated")
-
+		time.sleep(0.5)
 		while joycon.connected():
 			time.sleep(0.4) # TODO: Signaling, sleep otherwise
 			pat_status = joyconrumble[id]
@@ -85,18 +139,24 @@ def headpatter_thread(conGetter, conid):
 	print("TOO MANY FAILURES, CLOSING")
 
 threads = []
-server: osc_server.ThreadingOSCUDPServer = None
+server: osc_server.AsyncIOOSCUDPServer = None
 client: SimpleUDPClient = None
 
-def startOSC():
+async def startOSC(loop):
 	global server,client
 	def joyconrumble_1_handler(address, *args):
 		logging.debug("joyconrumble_1_handler %s %s", str(address), str(args))
-		joyconrumble[0] = args[0]
+		joyconrumble[0] = args[0] if (type(args[0]) == int or type(args[0]) == float) else args[0][0]
 
 	def joyconrumble_2_handler(address, *args):
 		logging.debug("joyconrumble_2_handler %s %s", str(address), str(args))
-		joyconrumble[1] = args[0]
+#		joyconrumble[1] = args[0][0]
+		joyconrumble[1] = args[0] if (type(args[0]) == int or type(args[0]) == float) else args[0][0]
+	def joyconrumble_3_handler(key,*params):
+		if client:
+			client.send_message("/brr", float(params[0]))
+		if args.verbose:
+			print("RELAY: ",key,params)
 	def default_handler(key,*vals):
 		if client:
 			client.send_message(key, vals)
@@ -107,13 +167,14 @@ def startOSC():
 	d.map("/avatar/parameters/joyconrumble1", joyconrumble_1_handler)
 	d.map("/avatar/parameters/joyconrumble2", joyconrumble_2_handler)
 	if args.to_port or args.verbose:
-		d.set_default_handler(default_handler)
+		d.map("/avatar/parameters/joyconrumble3", joyconrumble_3_handler)
+#		d.set_default_handler(default_handler)
 
-	server = osc_server.ThreadingOSCUDPServer(
-		(args.listen, args.port), d)
-	print("Listening on host,port {}".format(server.server_address))
+	server = osc_server.AsyncIOOSCUDPServer(
+		(args.listen, args.port), d, loop)
+	transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
+	print("Listening on host,port {}".format(transport))
 	print("")
-
 	if args.to_port:
 		client = SimpleUDPClient(args.to_ip, args.to_port)
 		print("Relaying other messages to {} on port {}".format(args.to_ip,args.to_port))
@@ -164,8 +225,27 @@ def startJoyCons():
 							args=(), daemon=True,name="watchdog")
 	x.start()
 
-if __name__ == "__main__":
-	startOSC()
+async def amain():
+
+	if sys.platform == 'win32':
+		loop = asyncio.ProactorEventLoop()
+	else:
+		loop = asyncio.get_event_loop()
+	
+	await startOSC(loop)
 	startJoyCons()
-	server.serve_forever()
+
+	# asyncio.set_event_loop(loop)
+	cmd = Commander(intro="This is example", prompt="example> ")
+	cmd.start(loop)
+	
+	shutdown_everything=False
+	while not shutdown_everything:
+		await asyncio.sleep(1)
+
+	#transport.close()
+
+if __name__ == "__main__":
+	asyncio.run(amain())
+	#server.serve_forever()
 	input("SHUTTING DOWN. PRESS ENTER TO CLOSE.")

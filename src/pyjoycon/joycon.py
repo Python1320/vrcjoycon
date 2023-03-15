@@ -430,7 +430,7 @@ class JoyCon:
             pattern.to_bytes(1, byteorder='little'))
 
     def disconnect_device(self):
-        self._write_output_report(b'\x01', b'\x06', b'\x00')
+        self._write_output_report(b'\x01', b'\x06', b'\x04')
 
     def _send_rumble(self,data=b'\x00\x00\x00\x00\x00\x00\x00\x00'):
         self._RUMBLE_DATA = data
