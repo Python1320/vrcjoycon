@@ -227,10 +227,7 @@ def startJoyCons():
 
 async def amain():
 
-	if sys.platform == 'win32':
-		loop = asyncio.ProactorEventLoop()
-	else:
-		loop = asyncio.get_event_loop()
+	loop = asyncio.get_event_loop()
 	
 	await startOSC(loop)
 	startJoyCons()
