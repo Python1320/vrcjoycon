@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "vrcjoycon"
+version = "0.1.0"
+description = "VR Joy-Con OSC Connector"
+authors = ["python1320 <python1320@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+coloredlogs = "^15.0.1"
+PyGLM = "^2.7.0"
+python-osc = "^1.8.1"
+asynccmd = "^0.2.4"
+hidapi = "^0.13.1"
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^5.9.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

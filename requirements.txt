@@ -1,4 +1,0 @@
-hidapi
-pyglm
-python-osc
-asynccmd
