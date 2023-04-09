@@ -6,16 +6,27 @@ authors = ["python1320 <python1320@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.12"
 coloredlogs = "^15.0.1"
 PyGLM = "^2.7.0"
 python-osc = "^1.8.1"
-asynccmd = "^0.2.4"
-hidapi = "^0.13.1"
+aioconsole = "^0.6.1"
+configobj = "^5.0.8"
+hid = "^1.0.5"
 
 [tool.poetry.group.dev.dependencies]
 pyinstaller = "^5.9.0"
+black-with-tabs = "^22.10.0"
+pyright = "^1.1.302"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["src"]
+exclude = ["**/node_modules",
+    "**/__pycache__",
+    "src/experimental",
+    "src/typestubs"
+]

@@ -20,6 +20,91 @@ For now, only simple on/off rumble haptics are supported!
 # HELP WANTED
 Only tested with knockoff joycons. Does it work with real joycons? Apparently not. We need to fix this!
 
+# Linux
+
+
+### **1. Installation**
+
+Only tested on Debian 12 (bookworm) and python 3.11
+
+Steps
+```bash
+
+# Our dependencies
+sudo apt install libhidapi-dev
+
+# https://innovativeinnovation.github.io/ubuntu-setup/python/pyenv.html
+# Pyenv dependencies
+sudo apt install make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev \
+xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+# Get pyenv so we can get python 3.11 exactly
+curl https://pyenv.run | bash
+
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# ^^^ Follow comments above to install pyenv lines in .bashrc ^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+pyenv install 3.11 # build 3.11 python
+pyenv virtualenv 3.11 joycon # create joycon virtualenv
+
+. .bashrc # reload .bashrc (or restart shell here)
+
+git clone "https://github.com/Python1320/vrcjoycon.git" && \
+cd vrcjoycon && \
+pyenv local joycon
+
+# Make sure you see (joycon) prefix on your shell now
+
+ # install poetry dependency manager
+pip install poetry # OR: curl -sSL https://install.python-poetry.org | python3
+
+poetry install # install python dependencies with poetry
+
+####### Do steps 2 and 3 below and (*) ##########
+
+cd src
+./main.py
+
+# Start controllers for discovery
+
+# Modify config
+
+${EDITOR:-nano} config.ini
+
+
+```
+(*) you may need to try `poetry add hid` and `poetry add hidapi` to find a working one (remove the other one).
+
+### **2. hid_nintendo kernel module must not be loaded**
+```bash
+echo "blacklist hid_nintendo" > /etc/modprobe.d/blacklist_hid_nintendo.conf
+rmmod hid_nintendo
+```
+
+### **3. Install udev rules**
+
+See: https://www.reddit.com/r/Stadia/comments/egcvpq/comment/fc5s7qm/
+
+```bash
+cat << 'EOF' > /etc/udev/rules.d/50-nintendo-switch.rules
+# Switch Joy-con (L) (Bluetooth only)
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:057E:2006.*", MODE="0666"
+
+# Switch Joy-con (R) (Bluetooth only)
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:057E:2007.*", MODE="0666"
+
+# Switch Pro controller (USB and Bluetooth)
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="2009", MODE="0666"
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="0005:057E:2009.*", MODE="0666"
+
+EOF
+
+```
+
+Run `udevadm control --reload-rules`
+
 # TODO
  - Example haptics avatar + world (please submit in PR!)
  - Button input possibility

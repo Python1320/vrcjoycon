@@ -31,7 +31,7 @@ class JoyCon:
         self.product_id  = product_id
         self.serial      = serial
         self.simple_mode = simple_mode  # TODO: It's for reporting mode 0x3f
-
+        
         # setup internal state
         self._input_hooks = []
         self._input_report = bytes(self._INPUT_REPORT_SIZE)
@@ -40,7 +40,7 @@ class JoyCon:
         self.set_gyro_calibration((0, 0, 0), (1, 1, 1))
 
         # connect to joycon
-        self._joycon_device = self._open(vendor_id, product_id, serial=None)
+        self._joycon_device = self._open(vendor_id, product_id, serial=serial)
         self._read_joycon_data()
         self._setup_sensors()
 
@@ -57,6 +57,7 @@ class JoyCon:
                 _joycon_device.open(vendor_id, product_id, serial)
             elif hasattr(hid, "Device"):  # hid
                 _joycon_device = hid.Device(vendor_id, product_id, serial)
+                
             else:
                 raise Exception("Implementation of hid is not recognized!")
         except IOError as e:
@@ -69,7 +70,10 @@ class JoyCon:
             del self._joycon_device
 
     def _read_input_report(self) -> bytes:
-        return bytes(self._joycon_device.read(self._INPUT_REPORT_SIZE))
+        data = self._joycon_device.read(self._INPUT_REPORT_SIZE)# notele mode will fail: timeout=1000*5
+        if not data:
+            raise TimeoutError("Controller read timed out")
+        return bytes(data)
 
     def _write_output_report(self, command, subcommand, argument):
         # TODO: add documentation
