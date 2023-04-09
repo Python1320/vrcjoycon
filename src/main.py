@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from configparser import ConfigParser
-import coloredlogs, logging
+import coloredlogs, logging, os, sys, ctypes
 from pathlib import Path
 
 log = logging.getLogger("VRCJOYCON")
@@ -29,9 +29,20 @@ def setup_config():
 
 setup_config()
 
+if sys.platform == "win32":
+	os.system("title ChilloutVR/VRChat Joy-Con OSC Connector")
+	try:
+		ctypes.cdll.LoadLibrary(r"hidapi.dll")
+	except (FileNotFoundError,ImportError):
+		try:
+			ctypes.cdll.LoadLibrary(r"./hidapi.dll")
+		except (FileNotFoundError,ImportError):
+			pass
+else:
+	print("\33]0;ChilloutVR/VRChat Joy-Con OSC Connector\a")
+
 
 from pyjoycon import JoyCon, get_device_ids, joycon
-import sys  # , os, threading, time, json
 from pythonosc import dispatcher, osc_server
 from pythonosc.udp_client import SimpleUDPClient
 
@@ -44,12 +55,7 @@ import asyncio, argparse, sys, typing, functools
 # from contextlib import suppress
 # from asynccmd import Cmd
 from aioconsole import AsynchronousCli
-from os import system
 
-if sys.platform == "win32":
-	system("title ChilloutVR/VRChat Joy-Con OSC Connector")
-else:
-	print("\33]0;ChilloutVR/VRChat Joy-Con OSC Connector\a")
 
 
 autorestart = config.getboolean("main", "autorestart")
